@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumière — Restaurante Fine Dining</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-light: #e8d5a3;
+      --gold-dark: #9a7a42;
+      --black: #080806;
+      --dark: #0f0f0d;
+      --dark-2: #1a1a18;
+      --dark-3: #242422;
+      --white: #f0ebe3;
+      --white-dim: rgba(240,235,227,0.65);
+      --white-faint: rgba(240,235,227,0.3);
+      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); }
+
+    /* ─── UTILITIES ─── */
+    .section-label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      display: block;
+    }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.08;
+    }
+    .gold-line {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      display: block;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── HEADER ─── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 28px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: padding 0.4s var(--ease), background 0.4s var(--ease), border-color 0.4s var(--ease);
+      border-bottom: 1px solid transparent;
+    }
+    header.scrolled {
+      background: rgba(8, 8, 6, 0.96);
+      backdrop-filter: blur(24px);
+      padding: 18px 60px;
+      border-bottom-color: rgba(201,169,110,0.12);
+    }
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-decoration: none;
+      gap: 2px;
+    }
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      margin-bottom: 4px;
+    }
+    .logo-name {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      color: var(--white);
+      line-height: 1;
+    }
+    .logo-sub {
+      font-family: 'Raleway', sans-serif;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 6px;
+      color: var(--white-dim);
+      text-transform: uppercase;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+    nav a {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 4px;
+      transition: color 0.3s;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s var(--ease);
+    }
+    nav a:hover, nav a.active {
+      color: var(--white);
+    }
+    nav a:hover::after, nav a.active::after {
+      width: 100%;
+    }
+    nav a.active {
+      color: var(--gold);
+    }
+    nav a.active::after {
+      background: var(--gold);
+    }
+    .btn-reservar {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 11px 22px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn-reservar:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--white);
+      transition: all 0.3s;
+    }
+
+    /* ─── HERO ─── */
+    #inicio {
+      position: relative;
+      min-height: 100vh;
+      background-image: url('background_definitivo.png');
+      background-size: cover;
+      background-position: 65% center;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        rgba(8,8,6,1) 0%,
+        rgba(8,8,6,0.97) 22%,
+        rgba(8,8,6,0.88) 38%,
+        rgba(8,8,6,0.52) 55%,
+        rgba(8,8,6,0.18) 72%,
+        rgba(8,8,6,0.04) 88%,
+        transparent 100%
+      );
+    }
+    .hero-overlay-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 180px;
+      background: linear-gradient(to bottom, rgba(8,8,6,0.6), transparent);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 60px;
+      padding-top: 120px;
+      max-width: 660px;
+    }
+    .hero-label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      animation: fadeUp 1s var(--ease) both;
+    }
+    .hero-label::after {
+      content: '';
+      width: 48px; height: 1px;
+      background: var(--gold);
+    }
+    .hero-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 28px;
+      animation: fadeUp 1s 0.15s var(--ease) both;
+    }
+    .hero-body {
+      font-family: 'Raleway', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--white-dim);
+      max-width: 380px;
+      margin-bottom: 44px;
+      animation: fadeUp 1s 0.3s var(--ease) both;
+    }
+    .btn-cardapio {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      text-decoration: none;
+      padding: 16px 32px;
+      transition: background 0.3s, letter-spacing 0.3s;
+      animation: fadeUp 1s 0.45s var(--ease) both;
+      width: fit-content;
+    }
+    .btn-cardapio:hover {
+      background: var(--gold-light);
+      letter-spacing: 4px;
+    }
+    .btn-cardapio svg {
+      transition: transform 0.3s;
+    }
+    .btn-cardapio:hover svg {
+      transform: translateX(4px);
+    }
+
+    /* ─── FEATURES STRIP ─── */
+    .features-strip {
+      position: relative;
+      z-index: 2;
+      background: var(--dark-2);
+      border-top: 1px solid rgba(201,169,110,0.1);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 32px 48px;
+      border-right: 1px solid rgba(201,169,110,0.1);
+      transition: background 0.3s;
+    }
+    .feature-item:last-child { border-right: none; }
+    .feature-item:hover { background: rgba(201,169,110,0.04); }
+    .feature-icon {
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+      opacity: 0.9;
+    }
+    .feature-text {}
+    .feature-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .feature-desc {
+      font-family: 'Raleway', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--white-dim);
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { overflow: hidden; }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    /* ─── ABOUT ─── */
+    #sobre {
+      padding: 140px 0;
+      background: var(--dark);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+    .about-text .section-label { margin-bottom: 24px; }
+    .about-text .section-heading {
+      font-size: clamp(36px, 3.5vw, 56px);
+      margin-bottom: 32px;
+    }
+    .about-text .section-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .about-body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--white-dim);
+      margin-bottom: 20px;
+    }
+    .about-body + .about-body { margin-bottom: 44px; }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 14px 28px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .about-image-wrap {
+      position: relative;
+    }
+    .about-image-wrap img {
+      width: 100%;
+      height: 560px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85);
+    }
+    .about-image-badge {
+      position: absolute;
+      bottom: -24px;
+      left: -24px;
+      background: var(--dark-2);
+      border: 1px solid rgba(201,169,110,0.2);
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .about-badge-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+    }
+    .about-badge-text {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white-dim);
+    }
+    .about-image-frame {
+      position: absolute;
+      top: 20px; right: -20px;
+      bottom: -20px; left: 20px;
+      border: 1px solid rgba(201,169,110,0.2);
+      pointer-events: none;
+    }
+
+    /* ─── STATS ─── */
+    .stats-section {
+      background: var(--dark-2);
+      border-top: 1px solid rgba(201,169,110,0.08);
+      border-bottom: 1px solid rgba(201,169,110,0.08);
+      padding: 72px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0 40px;
+      border-right: 1px solid rgba(201,169,110,0.1);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 64px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white-dim);
+    }
+
+    /* ─── MENU ─── */
+    #cardapio {
+      padding: 140px 0;
+      background: var(--black);
+    }
+    .menu-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .menu-header .section-label {
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .menu-header .section-label::after { display: none; }
+    .menu-header .section-label::before {
+      content: '';
+      width: 48px; height: 1px;
+      background: var(--gold);
+    }
+    .menu-header .section-heading { font-size: clamp(36px, 3.5vw, 56px); }
+    .menu-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      border: 1px solid rgba(201,169,110,0.18);
+      width: fit-content;
+      margin: 40px auto 60px;
+    }
+    .menu-tab {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 14px 32px;
+      transition: all 0.3s;
+      border-right: 1px solid rgba(201,169,110,0.18);
+      white-space: nowrap;
+    }
+    .menu-tab:last-child { border-right: none; }
+    .menu-tab.active, .menu-tab:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .menu-panel { display: none; }
+    .menu-panel.active { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(201,169,110,0.08); }
+    .dish-card {
+      background: var(--dark);
+      padding: 40px 44px;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      transition: background 0.3s;
+    }
+    .dish-card:hover { background: var(--dark-2); }
+    .dish-img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      flex-shrink: 0;
+      filter: brightness(0.9) saturate(0.9);
+    }
+    .dish-img-placeholder {
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--dark-3) 0%, var(--dark-2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dish-info {}
+    .dish-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .dish-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--white-dim);
+      margin-bottom: 16px;
+    }
+    .dish-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dish-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .dish-dot {
+      width: 4px; height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    /* ─── CHEF ─── */
+    #chef {
+      position: relative;
+      padding: 0;
+      background: var(--dark-2);
+      overflow: hidden;
+    }
+    .chef-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 680px;
+    }
+    .chef-image-col {
+      position: relative;
+      overflow: hidden;
+    }
+    .chef-image-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(0.75) saturate(0.7);
+      transition: transform 6s var(--ease);
+    }
+    .chef-image-col:hover img {
+      transform: scale(1.04);
+    }
+    .chef-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--dark-2) 100%);
+    }
+    .chef-text-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 80px 80px 60px;
+    }
+    .chef-text-col .section-label { margin-bottom: 24px; }
+    .chef-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 3vw, 52px);
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+    .chef-title {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .chef-bio {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--white-dim);
+      margin-bottom: 16px;
+    }
+    .chef-awards {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .chef-award {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .award-icon {
+      width: 32px; height: 32px;
+      flex-shrink: 0;
+    }
+    .award-text {}
+    .award-name {
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--white);
+      text-transform: uppercase;
+    }
+    .award-year {
+      font-size: 12px;
+      color: var(--white-faint);
+    }
+
+    /* ─── GALLERY ─── */
+    #galeria {
+      padding: 140px 0 0;
+      background: var(--black);
+    }
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .gallery-header .section-label {
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .gallery-header .section-label::after { display: none; }
+    .gallery-header .section-label::before {
+      content: '';
+      width: 48px; height: 1px;
+      background: var(--gold);
+    }
+    .gallery-header .section-heading { font-size: clamp(36px, 3.5vw, 56px); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 260px 260px 260px;
+      gap: 6px;
+    }
+    .g-item { position: relative; overflow: hidden; }
+    .g1 { grid-column: 1/5; grid-row: 1/3; }
+    .g2 { grid-column: 5/9; grid-row: 1/2; }
+    .g3 { grid-column: 9/13; grid-row: 1/2; }
+    .g4 { grid-column: 5/9; grid-row: 2/4; }
+    .g5 { grid-column: 9/13; grid-row: 2/3; }
+    .g6 { grid-column: 1/5; grid-row: 3/4; }
+    .g7 { grid-column: 9/13; grid-row: 3/4; }
+    .g-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s var(--ease), filter 0.5s;
+      filter: brightness(0.85) saturate(0.85);
+    }
+    .g-item:hover img {
+      transform: scale(1.07);
+      filter: brightness(0.7) saturate(1);
+    }
+    .g-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8,8,6,0.55);
+      display: flex;
+      align-items: flex-end;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .g-item:hover .g-item-overlay { opacity: 1; }
+    .g-item-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--white);
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials {
+      padding: 140px 0;
+      background: var(--dark);
+      text-align: center;
+    }
+    .testimonials .section-label {
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .testimonials .section-label::after { display: none; }
+    .testimonials .section-label::before {
+      content: '';
+      width: 48px; height: 1px;
+      background: var(--gold);
+    }
+    .testimonial-wrap {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .testimonial-quote-icon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 120px;
+      line-height: 0.5;
+      color: var(--gold);
+      opacity: 0.2;
+      display: block;
+      margin-bottom: 32px;
+    }
+    .testimonial-slide {
+      display: none;
+      animation: fadeIn 0.6s var(--ease);
+    }
+    .testimonial-slide.active { display: block; }
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--white);
+      margin-bottom: 36px;
+    }
+    .testimonial-stars {
+      color: var(--gold);
+      font-size: 14px;
+      letter-spacing: 4px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .testimonial-author {
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white-dim);
+    }
+    .testimonial-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 48px;
+    }
+    .t-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--white-faint);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none;
+    }
+    .t-dot.active {
+      background: var(--gold);
+      transform: scale(1.4);
+    }
+
+    /* ─── RESERVAS ─── */
+    #reservas {
+      padding: 140px 0;
+      background: var(--dark-2);
+      position: relative;
+    }
+    .reservas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: flex-start;
+    }
+    .reservas-text .section-label { margin-bottom: 24px; }
+    .reservas-text .section-heading {
+      font-size: clamp(36px, 3vw, 52px);
+      margin-bottom: 28px;
+    }
+    .reservas-desc {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--white-dim);
+      margin-bottom: 48px;
+    }
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .contact-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .contact-detail {}
+    .contact-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .contact-val {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--white-dim);
+    }
+    .reservas-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group label {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--dark-3);
+      border: none;
+      border-bottom: 1px solid rgba(201,169,110,0.25);
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 14px 0;
+      outline: none;
+      transition: border-color 0.3s;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-bottom-color: var(--gold);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--white-faint);
+    }
+    .form-group select option {
+      background: var(--dark-3);
+    }
+    .form-group textarea {
+      resize: none;
+      min-height: 100px;
+    }
+    .btn-submit {
+      font-family: 'Raleway', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      border: none;
+      cursor: pointer;
+      padding: 18px 48px;
+      transition: background 0.3s, letter-spacing 0.3s;
+      margin-top: 8px;
+      align-self: flex-start;
+    }
+    .btn-submit:hover {
+      background: var(--gold-light);
+      letter-spacing: 4px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(201,169,110,0.1);
+      padding: 80px 0 0;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      padding-bottom: 64px;
+    }
+    .footer-brand .logo { margin-bottom: 24px; }
+    .footer-desc {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--white-faint);
+      margin-bottom: 32px;
+      max-width: 260px;
+    }
+    .social-links {
+      display: flex;
+      gap: 14px;
+    }
+    .social-link {
+      width: 38px; height: 38px;
+      border: 1px solid rgba(201,169,110,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .social-link:hover {
+      border-color: var(--gold);
+      background: rgba(201,169,110,0.08);
+    }
+    .footer-col h4 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--white-faint);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-hours { display: flex; flex-direction: column; gap: 10px; }
+    .hour-row { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+    .hour-day { font-size: 12px; font-weight: 400; color: var(--white-faint); }
+    .hour-time { font-size: 12px; font-weight: 300; color: rgba(240,235,227,0.4); white-space: nowrap; }
+    .footer-bottom {
+      border-top: 1px solid rgba(201,169,110,0.08);
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(240,235,227,0.25);
+    }
+    .footer-copy span { color: var(--gold); opacity: 0.6; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(8,8,6,0.98);
+      backdrop-filter: blur(24px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 3px;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close {
+      position: absolute;
+      top: 28px; right: 28px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 28px;
+      color: var(--white-dim);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      header { padding: 24px 32px; }
+      header.scrolled { padding: 16px 32px; }
+      nav { display: none; }
+      .btn-reservar { display: none; }
+      .hamburger { display: flex; }
+      .hero-content { padding: 0 32px; padding-top: 110px; }
+      .container { padding: 0 32px; }
+      .about-grid { grid-template-columns: 1fr; gap: 60px; }
+      .about-image-wrap img { height: 420px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; }
+      .stat-item { padding: 36px; border-right: none; border-bottom: 1px solid rgba(201,169,110,0.1); }
+      .stat-item:nth-child(odd) { border-right: 1px solid rgba(201,169,110,0.1); }
+      .menu-panel.active { grid-template-columns: 1fr; }
+      .chef-grid { grid-template-columns: 1fr; }
+      .chef-image-col { height: 400px; }
+      .chef-text-col { padding: 60px 32px; }
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(4, 220px);
+      }
+      .g1 { grid-column: 1/2; grid-row: 1/2; }
+      .g2 { grid-column: 2/3; grid-row: 1/2; }
+      .g3 { grid-column: 1/2; grid-row: 2/3; }
+      .g4 { grid-column: 2/3; grid-row: 2/3; }
+      .g5 { grid-column: 1/2; grid-row: 3/4; }
+      .g6 { grid-column: 2/3; grid-row: 3/4; }
+      .g7 { grid-column: 1/3; grid-row: 4/5; }
+      .reservas-grid { grid-template-columns: 1fr; gap: 60px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .features-strip { grid-template-columns: 1fr; }
+      .feature-item { border-right: none; border-bottom: 1px solid rgba(201,169,110,0.1); }
+      .feature-item:last-child { border-bottom: none; }
+    }
+
+    @media (max-width: 640px) {
+      .hero-heading { font-size: 38px; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .menu-tabs { flex-wrap: wrap; }
+      .menu-tab { flex: 1 1 auto; text-align: center; }
+      .about-image-badge { left: 8px; bottom: 8px; }
+      .about-image-frame { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── MOBILE MENU ─── -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">&#x2715;</button>
+  <a href="#inicio" onclick="closeMobile()">Início</a>
+  <a href="#sobre" onclick="closeMobile()">Sobre</a>
+  <a href="#cardapio" onclick="closeMobile()">Cardápio</a>
+  <a href="#reservas" onclick="closeMobile()">Reservas</a>
+  <a href="#galeria" onclick="closeMobile()">Galeria</a>
+  <a href="#contato" onclick="closeMobile()">Contato</a>
+</div>
+
+<!-- ─── HEADER ─── -->
+<header id="mainHeader">
+  <a href="#inicio" class="logo">
+    <svg class="logo-icon" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2 C14 2 8 7 6 13 C4.5 17.5 6 22 10 24 C8.5 20 9 16 12 13 C11 16.5 11.5 20 14 22 C16.5 20 17 16.5 16 13 C19 16 19.5 20 18 24 C22 22 23.5 17.5 22 13 C20 7 14 2 14 2Z" fill="#c9a96e" opacity="0.9"/>
+      <line x1="14" y1="22" x2="14" y2="34" stroke="#c9a96e" stroke-width="1.2" opacity="0.6"/>
+      <line x1="10" y1="34" x2="18" y2="34" stroke="#c9a96e" stroke-width="1.2" opacity="0.6"/>
+    </svg>
+    <span class="logo-name">LUMIÈRE</span>
+    <span class="logo-sub">Restaurante</span>
+  </a>
+  <nav>
+    <a href="#inicio" class="active">Início</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#cardapio">Cardápio</a>
+    <a href="#reservas">Reservas</a>
+    <a href="#galeria">Galeria</a>
+    <a href="#contato">Contato</a>
+  </nav>
+  <a href="#reservas" class="btn-reservar">Reservar Agora</a>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section id="inicio">
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay-top"></div>
+  <div class="hero-content">
+    <p class="hero-label">Sabores que encantam</p>
+    <h1 class="hero-heading">Uma experiência<br>além do paladar</h1>
+    <p class="hero-body">Ingredientes selecionados, técnicas refinadas<br>e paixão em cada detalhe.</p>
+    <a href="#cardapio" class="btn-cardapio">
+      Ver Cardápio
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+        <path d="M1 5H15M15 5L11 1M15 5L11 9" stroke="#080806" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ─── FEATURES STRIP ─── -->
+<div class="features-strip">
+  <div class="feature-item reveal">
+    <svg class="feature-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M18 3 C18 3 9 10 7 18 C5.5 23.5 8 29 13 31 C11 26.5 12 22 15 18.5 C13.5 23 14.5 28 18 30 C21.5 28 22.5 23 21 18.5 C24 22 25 26.5 23 31 C28 29 30.5 23.5 29 18 C27 10 18 3 18 3Z" fill="#c9a96e" opacity="0.8"/>
+    </svg>
+    <div class="feature-text">
+      <span class="feature-title">Ingredientes Frescos</span>
+      <span class="feature-desc">Selecionados diariamente</span>
+    </div>
+  </div>
+  <div class="feature-item reveal" style="transition-delay:0.1s">
+    <svg class="feature-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M8 24 Q18 7 28 24" stroke="#c9a96e" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <line x1="5" y1="24" x2="31" y2="24" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="16" y1="24" x2="16" y2="29" stroke="#c9a96e" stroke-width="1.5"/>
+      <line x1="20" y1="24" x2="20" y2="29" stroke="#c9a96e" stroke-width="1.5"/>
+      <line x1="13" y1="29" x2="23" y2="29" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="18" cy="10" r="2" fill="#c9a96e" opacity="0.7"/>
+    </svg>
+    <div class="feature-text">
+      <span class="feature-title">Chef Premiado</span>
+      <span class="feature-desc">Excelência em cada prato</span>
+    </div>
+  </div>
+  <div class="feature-item reveal" style="transition-delay:0.2s">
+    <svg class="feature-icon" viewBox="0 0 36 36" fill="none">
+      <path d="M12 8 L24 8 L22 20 Q22 26 18 26 Q14 26 14 20 Z" stroke="#c9a96e" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="18" y1="26" x2="18" y2="31" stroke="#c9a96e" stroke-width="1.5"/>
+      <line x1="13" y1="31" x2="23" y2="31" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="feature-text">
+      <span class="feature-title">Ambiente Sofisticado</span>
+      <span class="feature-desc">Para momentos inesquecíveis</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ABOUT ─── -->
+<section id="sobre">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal-left">
+        <p class="section-label">Nossa História</p>
+        <h2 class="section-heading">Uma jornada de sabores<br>e <em>emoções</em></h2>
+        <p class="about-body">Fundado em 2012, o Lumière nasceu da crença de que uma refeição pode transcender o simples ato de comer — pode ser memória, celebração, arte. Em nossa cozinha, cada prato é concebido como uma obra, onde técnica e sensibilidade se encontram.</p>
+        <p class="about-body">Trabalhamos com os melhores produtores locais, ingredientes sazonais e uma equipe apaixonada que vê em cada detalhe uma oportunidade de encantar.</p>
+        <a href="#cardapio" class="btn-outline">
+          Explorar o cardápio
+          <svg width="14" height="9" viewBox="0 0 14 9" fill="none">
+            <path d="M1 4.5H13M13 4.5L9.5 1M13 4.5L9.5 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+      <div class="about-image-wrap reveal-right">
+        <div class="about-image-frame"></div>
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80" alt="Ambiente Lumière" loading="lazy"/>
+        <div class="about-image-badge">
+          <span class="about-badge-num">12</span>
+          <span class="about-badge-text">Anos de excelência</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STATS ─── -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="stat-number" data-target="40000">0</span>
+        <span class="stat-label">Clientes atendidos</span>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.1s">
+        <span class="stat-number" data-target="3">0</span>
+        <span class="stat-label">Estrelas Michelin</span>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.2s">
+        <span class="stat-number" data-target="280">0</span>
+        <span class="stat-label">Rótulos de vinho</span>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.3s">
+        <span class="stat-number" data-target="12">0</span>
+        <span class="stat-label">Anos de história</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MENU ─── -->
+<section id="cardapio">
+  <div class="container">
+    <div class="menu-header reveal">
+      <p class="section-label">Nossa Culinária</p>
+      <h2 class="section-heading">O Cardápio</h2>
+    </div>
+    <div class="menu-tabs">
+      <button class="menu-tab active" data-tab="entradas">Entradas</button>
+      <button class="menu-tab" data-tab="principais">Pratos Principais</button>
+      <button class="menu-tab" data-tab="sobremesas">Sobremesas</button>
+      <button class="menu-tab" data-tab="bebidas">Bebidas</button>
+    </div>
+
+    <!-- ENTRADAS -->
+    <div class="menu-panel active" id="tab-entradas">
+      <div class="dish-card reveal">
+        <div class="dish-img-placeholder">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/><path d="M8 14 Q14 8 20 14 Q14 20 8 14Z" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/></svg>
+        </div>
+        <div class="dish-info">
+          <h3 class="dish-name">Carpaccio de Wagyu</h3>
+          <p class="dish-desc">Finas fatias de wagyu com rúcula selvagem, parmesão 36 meses e azeite trufado</p>
+          <div class="dish-footer"><span class="dish-price">R$ 98</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.05s">
+        <div class="dish-img-placeholder">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/><path d="M8 14 Q14 8 20 14 Q14 20 8 14Z" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/></svg>
+        </div>
+        <div class="dish-info">
+          <h3 class="dish-name">Ostras ao Natural</h3>
+          <p class="dish-desc">Seis ostras frescas com granita de limão siciliano, mignonette de champagne e caviar</p>
+          <div class="dish-footer"><span class="dish-price">R$ 125</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.1s">
+        <div class="dish-img-placeholder">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/><path d="M8 14 Q14 8 20 14 Q14 20 8 14Z" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/></svg>
+        </div>
+        <div class="dish-info">
+          <h3 class="dish-name">Ceviche Nórdico</h3>
+          <p class="dish-desc">Atum fresco marinado em cítricos, creme de abacate, ovas de salmão e chips de mandioca</p>
+          <div class="dish-footer"><span class="dish-price">R$ 89</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.15s">
+        <div class="dish-img-placeholder">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/><path d="M8 14 Q14 8 20 14 Q14 20 8 14Z" stroke="#c9a96e" stroke-width="0.8" fill="none" opacity="0.4"/></svg>
+        </div>
+        <div class="dish-info">
+          <h3 class="dish-name">Velouté de Cogumelos</h3>
+          <p class="dish-desc">Caldo aveludado de cogumelos silvestres com espuma de queijo brie e óleo de trufa</p>
+          <div class="dish-footer"><span class="dish-price">R$ 75</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINCIPAIS -->
+    <div class="menu-panel" id="tab-principais">
+      <div class="dish-card reveal">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Wagyu A5 Grelhado</h3>
+          <p class="dish-desc">200g de wagyu japonês grau A5 com purê de tutano, jus de vinho tinto e aspargos brancos</p>
+          <div class="dish-footer"><span class="dish-price">R$ 380</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.05s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Robalo em Crosta de Ervas</h3>
+          <p class="dish-desc">Filé de robalo selvagem em crosta de ervas finas com bisque de crustáceos e legumes de raiz</p>
+          <div class="dish-footer"><span class="dish-price">R$ 195</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.1s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Risotto de Trufa Negra</h3>
+          <p class="dish-desc">Arroz arbóreo com trufa negra fresca, parmesão envelhecido 36 meses e manteiga de ervas</p>
+          <div class="dish-footer"><span class="dish-price">R$ 165</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.15s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Cordeiro Confitado</h3>
+          <p class="dish-desc">Paleta de cordeiro confitada por 12 horas com couscous marroquino, jus de romã e hortelã</p>
+          <div class="dish-footer"><span class="dish-price">R$ 220</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOBREMESAS -->
+    <div class="menu-panel" id="tab-sobremesas">
+      <div class="dish-card reveal">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Fondant de Chocolate 72%</h3>
+          <p class="dish-desc">Bolo de chocolate com coração líquido, gelato de baunilha Madagascar e sal de flores</p>
+          <div class="dish-footer"><span class="dish-price">R$ 65</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.05s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Crème Brûlée de Baunilha</h3>
+          <p class="dish-desc">Tradicional crème brûlée com baunilha Tahiti, tuile de caramelo e framboesas frescas</p>
+          <div class="dish-footer"><span class="dish-price">R$ 58</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.1s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Soufflé de Maracujá</h3>
+          <p class="dish-desc">Soufflé quentinho de maracujá com coulis de manga, chantilly de cardamomo e ouro comestível</p>
+          <div class="dish-footer"><span class="dish-price">R$ 68</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.15s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Tarte Tatin de Pêra</h3>
+          <p class="dish-desc">Tarte caramelizada com pêra Williams, calda de especiarias e sorvete artesanal de canela</p>
+          <div class="dish-footer"><span class="dish-price">R$ 62</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEBIDAS -->
+    <div class="menu-panel" id="tab-bebidas">
+      <div class="dish-card reveal">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Carta de Vinhos</h3>
+          <p class="dish-desc">Seleção curada pelo sommelier com mais de 280 rótulos de grandes regiões vinícolas do mundo</p>
+          <div class="dish-footer"><span class="dish-price">desde R$ 95</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.05s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Cocktails Autorais</h3>
+          <p class="dish-desc">Criações exclusivas do nosso bar com destilados premium, ingredientes da estação e técnicas modernas</p>
+          <div class="dish-footer"><span class="dish-price">R$ 45</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.1s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Menu de Harmonização</h3>
+          <p class="dish-desc">Experiência completa com harmonização de vinhos selecionados para cada etapa do menu degustação</p>
+          <div class="dish-footer"><span class="dish-price">R$ 280</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+      <div class="dish-card reveal" style="transition-delay:0.15s">
+        <div class="dish-img-placeholder"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="10" stroke="#c9a96e" stroke-width="0.8" opacity="0.4"/></svg></div>
+        <div class="dish-info">
+          <h3 class="dish-name">Chás & Infusões</h3>
+          <p class="dish-desc">Seleção de chás raros e infusões artesanais preparadas à mesa, para finalizar com elegância</p>
+          <div class="dish-footer"><span class="dish-price">R$ 28</span><div class="dish-dot"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CHEF ─── -->
+<section id="chef">
+  <div class="chef-grid">
+    <div class="chef-image-col reveal-left">
+      <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=900&q=80" alt="Chef Laurent Beaumont" loading="lazy"/>
+      <div class="chef-image-overlay"></div>
+    </div>
+    <div class="chef-text-col reveal-right">
+      <p class="section-label">À frente da cozinha</p>
+      <h2 class="chef-name">Laurent Beaumont</h2>
+      <p class="chef-title">Chef Executivo & Fundador</p>
+      <p class="chef-bio">Nascido em Lyon, França, Laurent descobriu sua paixão pela gastronomia ainda criança, entre as fragâncias da cozinha de sua avó. Aos 18 anos ingressou no Bocuse d'Or, iniciando uma trajetória que o levaria a cozinhas estreladas de Paris, Tóquio e Nova York.</p>
+      <p class="chef-bio">Com mais de duas décadas de experiência e um olhar singular para a fusão entre a alta cozinha europeia e os sabores exuberantes do Brasil, Laurent fundou o Lumière em 2012 — hoje um dos mais respeitados endereços gastronômicos da América do Sul.</p>
+      <div class="chef-awards">
+        <div class="chef-award">
+          <svg class="award-icon" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="14" r="9" stroke="#c9a96e" stroke-width="1.2"/>
+            <path d="M11 27 L16 24 L21 27" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 11 L16 8 L19 11 L23 11.5 L20.5 14 L21.5 18 L16 15.5 L10.5 18 L11.5 14 L9 11.5 Z" fill="#c9a96e" opacity="0.8"/>
+          </svg>
+          <div class="award-text">
+            <span class="award-name">3 Estrelas Michelin</span>
+            <span class="award-year">Guia Michelin 2019 – presente</span>
+          </div>
+        </div>
+        <div class="chef-award">
+          <svg class="award-icon" viewBox="0 0 32 32" fill="none">
+            <rect x="8" y="6" width="16" height="20" rx="1" stroke="#c9a96e" stroke-width="1.2"/>
+            <line x1="12" y1="13" x2="20" y2="13" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="12" y1="17" x2="18" y2="17" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M13 9 L16 6.5 L19 9" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="award-text">
+            <span class="award-name">Melhor Chef da América Latina</span>
+            <span class="award-year">Latin America's 50 Best Restaurants 2023</span>
+          </div>
+        </div>
+        <div class="chef-award">
+          <svg class="award-icon" viewBox="0 0 32 32" fill="none">
+            <path d="M16 4 L19.5 12 L28 12.5 L22 18 L24 26 L16 22 L8 26 L10 18 L4 12.5 L12.5 12 Z" stroke="#c9a96e" stroke-width="1.2" fill="none"/>
+          </svg>
+          <div class="award-text">
+            <span class="award-name">Bocuse d'Or — Finalista</span>
+            <span class="award-year">Lyon, 2008</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── GALLERY ─── -->
+<section id="galeria">
+  <div class="container">
+    <div class="gallery-header reveal">
+      <p class="section-label">Momentos & Criações</p>
+      <h2 class="section-heading">Nossa Galeria</h2>
+    </div>
+  </div>
+  <div class="gallery-grid">
+    <div class="g-item g1">
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Ambiente" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Ambiente</span></div>
+    </div>
+    <div class="g-item g2">
+      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=700&q=80" alt="Criação do Chef" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Criação do Chef</span></div>
+    </div>
+    <div class="g-item g3">
+      <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&q=80" alt="Harmonização" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Harmonização</span></div>
+    </div>
+    <div class="g-item g4">
+      <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=700&q=80" alt="Prato Principal" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Prato Principal</span></div>
+    </div>
+    <div class="g-item g5">
+      <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=700&q=80" alt="Sobremesa" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Sobremesa</span></div>
+    </div>
+    <div class="g-item g6">
+      <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=700&q=80" alt="Finalização" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Finalização</span></div>
+    </div>
+    <div class="g-item g7">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&q=80" alt="Nos bastidores" loading="lazy"/>
+      <div class="g-item-overlay"><span class="g-item-label">Nos bastidores</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section class="testimonials">
+  <div class="container">
+    <p class="section-label">O que dizem sobre nós</p>
+    <div class="testimonial-wrap">
+      <span class="testimonial-quote-icon">"</span>
+      <div class="testimonial-slide active" id="t0">
+        <p class="testimonial-text">"Uma experiência que transcende a gastronomia. Cada prato é uma narrativa de sabores e emoções que ficará gravada na memória para sempre."</p>
+        <span class="testimonial-stars">★ ★ ★ ★ ★</span>
+        <span class="testimonial-author">Maria Clara Souza — São Paulo</span>
+      </div>
+      <div class="testimonial-slide" id="t1">
+        <p class="testimonial-text">"O Lumière redefiniu para mim o que é cozinha de alto nível. A atenção ao detalhe, o serviço impecável e a harmonização de vinhos são simplesmente perfeitos."</p>
+        <span class="testimonial-stars">★ ★ ★ ★ ★</span>
+        <span class="testimonial-author">André Fonseca — Rio de Janeiro</span>
+      </div>
+      <div class="testimonial-slide" id="t2">
+        <p class="testimonial-text">"Já estive nos melhores restaurantes do mundo e o Lumière se mantém entre eles com facilidade. Laurent Beaumont é um gênio da gastronomia contemporânea."</p>
+        <span class="testimonial-stars">★ ★ ★ ★ ★</span>
+        <span class="testimonial-author">Isabela Monteiro — Paris</span>
+      </div>
+      <div class="testimonial-dots">
+        <button class="t-dot active" data-t="0"></button>
+        <button class="t-dot" data-t="1"></button>
+        <button class="t-dot" data-t="2"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── RESERVAS ─── -->
+<section id="reservas">
+  <div class="container">
+    <div class="reservas-grid">
+      <div class="reservas-text reveal-left">
+        <p class="section-label">Reserve sua mesa</p>
+        <h2 class="section-heading">Faça Sua<br>Reserva</h2>
+        <p class="reservas-desc">Cada mesa no Lumière é preparada com cuidado para proporcionar uma experiência única. Reserve com antecedência e garanta seu momento especial.</p>
+        <div class="contact-list">
+          <div class="contact-item">
+            <svg class="contact-icon" viewBox="0 0 18 18" fill="none">
+              <path d="M3 3h12v12H3z" stroke="#c9a96e" stroke-width="1.2" fill="none"/>
+              <path d="M3 6l6 4 6-4" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <div class="contact-detail">
+              <span class="contact-label">E-mail</span>
+              <span class="contact-val">reservas@lumiere.com.br</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <svg class="contact-icon" viewBox="0 0 18 18" fill="none">
+              <path d="M3 3 Q3 15 15 15" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+              <path d="M11 15 L15 15 L15 11" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <circle cx="3" cy="3" r="1.5" fill="#c9a96e" opacity="0.7"/>
+            </svg>
+            <div class="contact-detail">
+              <span class="contact-label">Telefone</span>
+              <span class="contact-val">(11) 3456-7890</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <svg class="contact-icon" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="8" r="3" stroke="#c9a96e" stroke-width="1.2"/>
+              <path d="M9 1 C5 1 2 4 2 8 C2 13 9 17 9 17 C9 17 16 13 16 8 C16 4 13 1 9 1Z" stroke="#c9a96e" stroke-width="1.2" fill="none"/>
+            </svg>
+            <div class="contact-detail">
+              <span class="contact-label">Endereço</span>
+              <span class="contact-val">Rua Augusta, 1500 — Jardins, São Paulo</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <svg class="contact-icon" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="7" stroke="#c9a96e" stroke-width="1.2"/>
+              <polyline points="9,5 9,9 12,11" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="contact-detail">
+              <span class="contact-label">Horário</span>
+              <span class="contact-val">Ter – Dom: 19h às 23h30</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <form class="reservas-form" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome completo</label>
+              <input type="text" placeholder="Seu nome"/>
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" placeholder="seu@email.com"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date"/>
+            </div>
+            <div class="form-group">
+              <label>Horário</label>
+              <select>
+                <option value="">Selecionar</option>
+                <option>19:00</option>
+                <option>19:30</option>
+                <option>20:00</option>
+                <option>20:30</option>
+                <option>21:00</option>
+                <option>21:30</option>
+                <option>22:00</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Número de pessoas</label>
+              <select>
+                <option value="">Selecionar</option>
+                <option>1 pessoa</option>
+                <option>2 pessoas</option>
+                <option>3 pessoas</option>
+                <option>4 pessoas</option>
+                <option>5 pessoas</option>
+                <option>6+ pessoas</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ocasião especial</label>
+              <select>
+                <option value="">Nenhuma</option>
+                <option>Aniversário</option>
+                <option>Casamento</option>
+                <option>Negócios</option>
+                <option>Romantico</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea placeholder="Alergias, preferências ou pedidos especiais..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Confirmar Reserva</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer id="contato">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#inicio" class="logo">
+          <svg class="logo-icon" viewBox="0 0 28 36" fill="none">
+            <path d="M14 2 C14 2 8 7 6 13 C4.5 17.5 6 22 10 24 C8.5 20 9 16 12 13 C11 16.5 11.5 20 14 22 C16.5 20 17 16.5 16 13 C19 16 19.5 20 18 24 C22 22 23.5 17.5 22 13 C20 7 14 2 14 2Z" fill="#c9a96e" opacity="0.9"/>
+            <line x1="14" y1="22" x2="14" y2="34" stroke="#c9a96e" stroke-width="1.2" opacity="0.6"/>
+            <line x1="10" y1="34" x2="18" y2="34" stroke="#c9a96e" stroke-width="1.2" opacity="0.6"/>
+          </svg>
+          <span class="logo-name">LUMIÈRE</span>
+          <span class="logo-sub">Restaurante</span>
+        </a>
+        <p class="footer-desc">Fine dining em São Paulo, onde a gastronomia francesa encontra os sabores do Brasil em uma experiência única e inesquecível.</p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="12" height="12" rx="3" stroke="#c9a96e" stroke-width="1.2"/>
+              <circle cx="8" cy="8" r="3" stroke="#c9a96e" stroke-width="1.2"/>
+              <circle cx="11.5" cy="4.5" r="0.8" fill="#c9a96e"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3H8.5C7.7 3 7 3.7 7 4.5V6H5v2.5h2V13h2.5V8.5H11L11.5 6H9.5V4.5C9.5 4.2 9.7 4 10 4Z" stroke="#c9a96e" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="TripAdvisor">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="5" cy="8" r="2.5" stroke="#c9a96e" stroke-width="1.2"/>
+              <circle cx="11" cy="8" r="2.5" stroke="#c9a96e" stroke-width="1.2"/>
+              <path d="M2 5 Q8 2 14 5" stroke="#c9a96e" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navegação</h4>
+        <ul class="footer-links">
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#sobre">Nossa História</a></li>
+          <li><a href="#cardapio">Cardápio</a></li>
+          <li><a href="#chef">O Chef</a></li>
+          <li><a href="#galeria">Galeria</a></li>
+          <li><a href="#reservas">Reservas</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Menu Degustação</h4>
+        <ul class="footer-links">
+          <li><a href="#cardapio">Menu Lumière (7 tempos)</a></li>
+          <li><a href="#cardapio">Menu Saison (5 tempos)</a></li>
+          <li><a href="#cardapio">Menu Vegetariano</a></li>
+          <li><a href="#cardapio">Harmonização de Vinhos</a></li>
+          <li><a href="#cardapio">Eventos Privados</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Horário</h4>
+        <div class="footer-hours">
+          <div class="hour-row">
+            <span class="hour-day">Segunda</span>
+            <span class="hour-time">Fechado</span>
+          </div>
+          <div class="hour-row">
+            <span class="hour-day">Terça – Qui</span>
+            <span class="hour-time">19h – 23h</span>
+          </div>
+          <div class="hour-row">
+            <span class="hour-day">Sexta – Sáb</span>
+            <span class="hour-time">19h – 00h</span>
+          </div>
+          <div class="hour-row">
+            <span class="hour-day">Domingo</span>
+            <span class="hour-time">12h – 16h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 <span>Lumière Restaurante</span>. Todos os direitos reservados.</span>
+      <span class="footer-copy">Rua Augusta, 1500 — Jardins, São Paulo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header scroll
+  const header = document.getElementById('mainHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id], footer[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+
+  // Reveal animations
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObs.observe(el));
+
+  // Counter animation
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const duration = 1800;
+    const start = performance.now();
+    const update = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const val = Math.round(ease * target);
+      el.textContent = target >= 1000 ? '+' + val.toLocaleString('pt-BR') : val;
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.stat-number').forEach(animateCounter);
+        counterObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stats-grid').forEach(el => counterObs.observe(el));
+
+  // Menu tabs
+  document.querySelectorAll('.menu-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      document.querySelectorAll('.menu-panel.active .reveal').forEach(el => {
+        el.classList.remove('visible');
+        setTimeout(() => el.classList.add('visible'), 50);
+      });
+    });
+  });
+
+  // Testimonials
+  let currentT = 0;
+  const slides = document.querySelectorAll('.testimonial-slide');
+  const dots = document.querySelectorAll('.t-dot');
+  function showT(n) {
+    slides[currentT].classList.remove('active');
+    dots[currentT].classList.remove('active');
+    currentT = n;
+    slides[currentT].classList.add('active');
+    dots[currentT].classList.add('active');
+  }
+  dots.forEach(dot => dot.addEventListener('click', () => showT(parseInt(dot.dataset.t))));
+  setInterval(() => showT((currentT + 1) % slides.length), 5000);
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => mobileMenu.classList.add('open'));
+  document.getElementById('mobileClose').addEventListener('click', () => mobileMenu.classList.remove('open'));
+  function closeMobile() { mobileMenu.classList.remove('open'); }
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.btn-submit');
+    btn.textContent = 'Reserva Confirmada ✓';
+    btn.style.background = '#4a7c59';
+    btn.style.letterSpacing = '2px';
+    setTimeout(() => {
+      btn.textContent = 'Confirmar Reserva';
+      btn.style.background = '';
+      btn.style.letterSpacing = '';
+      e.target.reset();
+    }, 3500);
+  }
+</script>
+</body>
+</html>
